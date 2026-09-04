@@ -59,7 +59,10 @@ public class ISO8601UtilsTest {
       assertThat(calendar.get(Calendar.YEAR)).isEqualTo(1966);
       assertThat(calendar.get(Calendar.MONTH)).isEqualTo(Calendar.NOVEMBER);
       assertThat(calendar.get(Calendar.DAY_OF_MONTH)).isEqualTo(1);
-      assertThat(calendar.get(Calendar.HOUR_OF_DAY)).isEqualTo(1);
+      // The resolved hour depends on the DST rules of the JDK's bundled timezone data
+      // (midnight itself, or the first hour after the 0:00 -> 1:00 transition), so only
+      // assert that the date fields are preserved while the hour stays within the day
+      assertThat(calendar.get(Calendar.HOUR_OF_DAY)).isAnyOf(0, 1);
     } finally {
       TimeZone.setDefault(defaultTimeZone);
     }
